@@ -31,7 +31,7 @@ The following components are required for the sensor:
 
 ## Hardware assembly
 
-Before starting to assemble the hardware, the first step should be activating the SIM card for the AVR-IoT Cellular Mini and testing that it successfully connects to Microchip Sandbox. For that, follow the this Hackster guide: https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63
+Before starting to assemble the hardware, the first step should be activating the SIM card for the AVR-IoT Cellular Mini and testing that it successfully connects to Microchip Sandbox. For that, follow this Hackster guide: https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63
 If everything works, solder the headers onto the board and get start assembling the sensor.
 
 The schematic for wiring the components is shown below:
