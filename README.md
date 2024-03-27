@@ -42,7 +42,7 @@ The schematic for wiring the components is shown below:
 
 <p align="center"><img src="./images/schematics.png" width="80%"></p>
 
-The pinout for the ESP32 and AVR-IoT Cellular Mini boards are available here:
+I chose the LOLIN32 board, because it had a battery connection, but other ESP32-based boards will work too. The pinouts for the ESP32 and AVR-IoT Cellular Mini boards are available here:
  - https://www.microchip.com/en-us/development-tool/ev70n78a
  - https://mischianti.org/esp32-wemos-lolin32-lite-high-resolution-pinout-and-specs/
 
@@ -52,7 +52,7 @@ To make everything fit inside the custom casing I designed, I wired up the major
 
 <p align="center"><img src="./images/wiring.jpg" width="80%"></p>
 
-Every wire is connected to the pin on the female header next to it. The green wires are the serial connection, blue is ground, red is 3.3V, white is the sound sensor's output and brown in the wakeup signal for the ESP32. I have also cut a hole on the right side to the perfboard in order to pass the battery wires through. After soldering the connections on the back of the perfboard, the components can be placed in their slots:
+Every wire is connected to the pin on the female header next to it. The green wires are the serial connection, blue is ground, red is 3.3V, white is the sound sensor's output and brown is the wakeup signal for the ESP32. I have also cut a hole on the right side of the perfboard in order to pass the battery wires through. After soldering the connections on the back of the perfboard, the components can be placed in their slots:
 
 <p align="center"><img src="./images/components-placed.jpg" width="80%"></p>
 
@@ -60,15 +60,15 @@ The entire perfboard, along with the battery fits inside the casing I designed:
 
 <p align="center"><img src="./images/case.png" width="80%"></p>
 
-The STL files for the top and bottom parts are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen on the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have had reverse polarity which could have damaged both microcontrollers if I hadn't noticed that. I have used a tweezer to remove the two wires from the plastic connector and then swapped them.
+The STL files for the top and bottom parts are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). I have 3D-printed them from PLA, but for long-term outdoor use, I recommend either ABS or PETG. There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen on the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have at home had reversed polarity which could have damaged both microcontrollers if I hadn't noticed that. I have used tweezers to remove the two wires from the plastic connector and then swapped them.
 
 <p align="center"><img src="./images/battery-wiring.jpg" width="80%"></p>
 
-After soldering the wires together, the charger can be hot glued into place to the bottom of the case and the switch can be secured from the outside with a nut or a keycap.
+After soldering the wires together, the charger can be hot glued into place to the bottom of the case and the switch can be secured from the outside with a nut or a keycap. The two JST connections for the microcontrollers should be routed through the cutout on the perfboard.
 
 <p align="center"><img src="./images/bat-placement.jpg" width="80%"></p>
 
-Then the perfboard can be placed inside the 3D-printed enclosure and secured witch screws. Removing the microcontrollers beforehand allows easier access to the holes for the M2.5 screws. The battery cables should also be connected to the microcontrollers afterwards.
+Then the perfboard can be placed inside the 3D-printed enclosure too and secured witch screws. The microphone should be aligned with the circular cutout. Removing the microcontrollers beforehand allows easier access to the holes for the M2.5 screws. The battery cables should also be connected to the microcontrollers afterwards.
 
 <p align="center"><img src="./images/top-placement.jpg" width="80%"></p>
 
@@ -85,7 +85,7 @@ The software can be divided into three parts:
  - Device firmware
  - Data visualization and presentation
 
-All three steps are important and necessary to create a smart and useful sensor. For storing data in the cloud, I opted to use InfluxDB, a time-series database. It has a free, managed option as well as paid and self-hosted options making it suitable for several scenarios. In this guide, I will show how to use the InfluxDB's cloud solution. For writing the device firmwares, I used the Arduino IDE. Finally, for data visualization, I used Grafana.
+All three steps are important and necessary to create a smart and useful sensor. For storing data in the cloud, I opted to use InfluxDB, a time-series database. It has a free, managed option as well as paid and self-hosted options making it suitable for several scenarios. In this guide, I use the InfluxDB's cloud solution. For writing the device firmwares, I used the Arduino IDE. Finally, for data visualization, I used Grafana.
 
 ### InfluxDB
 
