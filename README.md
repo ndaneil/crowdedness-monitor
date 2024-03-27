@@ -1,15 +1,19 @@
 # Crowdedness Monitor
 
-Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. Mi aim is to solve this by using smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decided for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
+Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. A solution to this is to use smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decide for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
 
-## Sensor overview
+## Structure of the system
+
+The image below shows the structure of the smart crowdedness monitoring system. The smart sensor will collect multiple data points that could be used for estimating how crowded a place is. This information is then transmitted to the cloud, processed and visualized in an easy-to-interpret way. **This guide shows how to build the smart sensor, store the data in the cloud and visualize the collected information.**
+
+<p align="center"><img src="./images/structure.png" width="80%"></p>
 
 To estimate the crowdedness of a place, I decided to use three data points:
  - Noise level
  - Nearby WiFi devices
  - Nearby Bluetooth devices
 
-My aim is to provide a prototype that works in several environments. For indoor places which people regularly visit, WiFi device data can be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect Bluetooth devices as most people leave bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for Bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks or other places without open WiFi networks. 
+My aim is to provide a prototype that works in several environments and test out how well the data points correlate with the occupancy level. For indoor places which people regularly visit, WiFi device data could be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect Bluetooth devices as most people leave Bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for Bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks or other places without open WiFi networks. 
 
 Sending this data over LTE offers independence from WiFi which most IoT devices rely on. To increase fault tolerance, I have opted to include a battery in the Smart Sensor to enable operation in remote places with intermittent power or even without power (e.g. a solar panel could be used to recharge the built-in battery).
 
@@ -78,18 +82,9 @@ When assembled, the smart sensor looks like this:
 
 Let's write the software next.
 
-## Software
+## Cloud storage - InfluxDB
 
-The software can be divided into three parts:
- - Cloud data storage
- - Device firmware
- - Data visualization and presentation
-
-All three steps are important and necessary to create a smart and useful sensor. For storing data in the cloud, I opted to use InfluxDB, a time-series database. It has a free, managed option as well as paid and self-hosted options making it suitable for several scenarios. In this guide, I use the InfluxDB's cloud solution. For writing the device firmwares, I used the Arduino IDE. Finally, for data visualization, I used Grafana.
-
-### InfluxDB
-
-To get started with InfluxDB, the first step is to register for a free serverless cloud account at [https://www.influxdata.com](https://www.influxdata.com):
+Before writing code for the two microcontrollers, we need to place to store the data the AVR-IoT Cellular Mini will transmit. I opted to use InfluxDB, a time-series database. It has a free managed option as well as paid and self-hosted options making it suitable for several use cases. In this guide, I use the InfluxDB's cloud solution. To get started with InfluxDB, the first step is to register for a free serverless cloud account at [https://www.influxdata.com](https://www.influxdata.com):
 
 <p align="center"><img src="./images/influxdb-signup.png" width="80%"></p>
 
@@ -97,7 +92,7 @@ After registering, create a new bucket named **sensordata**:
 
 <p align="center"><img src="./images/influxdb-bucket.png" width="80%"></p>
 
-On the free plan, the maximum retention period is 30 days. The next step is to generate access tokens. Firstly, generating one for the AVR-IoT Cellular Mini with read and write access to the sensordata bucket:
+This is where we will send the data to. On the free plan, the maximum retention period for our data is 30 days. The next step is to generate access tokens. Firstly, generating one for the AVR-IoT Cellular Mini with read and write access to the sensordata bucket:
 
 <p align="center"><img src="./images/influxdb-token-1.png" width="80%"></p>
 
@@ -105,15 +100,17 @@ The other token will provide read-only access to the data through Grafana:
 
 <p align="center"><img src="./images/influxdb-token-2.png" width="80%"></p>
 
-For now, store the generated tokens. The first one will need to be pasted in the arduino code, while the other will be needed during the Grafana setup.
+Grafana will be used for visualizing the data, presenting it in a nice, easy-to-interpret format. For now, save the generated tokens, both will be needed later in this guide. 
 
-### ESP32
+### ESP32 Arduino code
 
-The ESP32's responsibility is collecting WiFi and Bluetooth device data, more specifically, the number of unique devices nearby. For listening to WiFi messages,the ESP32 has a so-called promiscuous mode. I have used [this](https://www.hackster.io/p99will/esp32-wifi-mac-scanner-sniffer-promiscuous-4c12f4) Hackster guide as a basis on how to run promiscuous mode on the ESP32. For nearby bluetooth devices, the ESP32 can scan passively or actively for nearby BLE devices. A good approach I found for this was in [this](https://github.com/dollop80/ESP32-BLE-Scanner/blob/master/ESP32_BLE_Scanner.ino) GitHub repo.
+For both the ESP32 and the AVR IoT Cellular Mini, I wrote the code using the [Arduino IDE](https://www.arduino.cc/en/software). [This](https://randomnerdtutorials.com/getting-started-with-esp32/) is a good guide on how to get started with the Arduino ESP for ESP32.
 
-An important limitation is that WiFi and BLE share the same radio on the ESP32, so only one can ran at a time. For WiFi, the ESP32 can only be tuned to a single 2.4GHz channel out of the 14 available. This means that in order to get an accurate count of nearby devices, we need to alternate between scanning on different WiFi channels and for BLE devices. Let's see how it can be done. The full source code is available [here](./esp32.ino). 
+The ESP32's responsibility is collecting WiFi and Bluetooth device data, more specifically, the number of unique devices nearby. For listening to WiFi messages, the ESP32 has a so-called promiscuous mode where the ESP32 listens to all WiFi packets (called frames), even those not intended for the microcontroller. I have read [this](https://www.hackster.io/p99will/esp32-wifi-mac-scanner-sniffer-promiscuous-4c12f4) Hackster guide to understand the basics on how to run promiscuous mode on the ESP32. For nearby bluetooth devices, the ESP32 can scan passively or actively for nearby BLE devices. A good approach I found for BLE scanning was in [this](https://github.com/dollop80/ESP32-BLE-Scanner/blob/master/ESP32_BLE_Scanner.ino) GitHub repo.
 
-The first part is the includes, followed by increasing the main loop task's stack size from 8KB to 32KB.
+An important limitation of the ESP32 for our use case is that WiFi and BLE share the same radio, so only one can run at a time. For WiFi, the ESP32 can only be tuned to a single 2.4GHz channel out of the 14 available. This means that in order to get an accurate count of nearby devices, we need to alternate between scanning on different WiFi channels and for BLE devices. Let's see how it can be done. The full source code is available [here](./esp32.ino). 
+
+The first part of the sketch is the imports, followed by increasing the main loop task's stack size from 8KB to 32KB. This is to make sure we have enough stack space.
 
 ```c
 #include <Arduino.h>
@@ -237,7 +234,7 @@ void cleanupDevices(){
 }
 ```
 
-In order to count the number of unique BLE and WiFi devices nearby, we just need to loop through the buffers and count how many devices are alive:
+To count the number of unique BLE and WiFi devices nearby, we just need to loop through the buffers and count how many devices are alive:
 
 ```c
 int countWiFiDevices(){
@@ -288,7 +285,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks{
 };
 ```
 
-Here, we create a derived class from `BLEAdvertisedDeviceCallbacks`, overriding the `onResult()` functions where we call the already mentioned `registerDevice()` function.
+Here, we create a derived class from `BLEAdvertisedDeviceCallbacks`, overriding the `onResult()` functions where we call the already written `registerDevice()` function.
 
 The next function is the setup function:
 
@@ -404,7 +401,7 @@ Keep in mind that the ESP32 only has a 2.4GHz radio, so devices connecting to ac
 
 The next step is to write the code to run on the AVR-IoT Cellular Mini.
 
-### AVR-IoT Cellular Mini
+### AVR-IoT Cellular Mini Arduino code
 
 To set up Arduino ide for the board, please follow the steps outlined on Microchip's website: [https://iot.microchip.com/docs/arduino/introduction/devenv](https://iot.microchip.com/docs/arduino/introduction/devenv).
 
