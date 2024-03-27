@@ -305,7 +305,7 @@ void setup() {
 
 Here, the two serial ports are initialized with a baud rate of 115200. Serial2 is the one which will be used for communication with the AVR-IoT Cellular Mini. Persisting WiFi configuration changes is also turned off (though it is off by default on more recent Arduino ESP32 library versions) to prevent writing to the flash storage. The last step is creating an instance of the BLE callback we will use later.
 
-The function below is the main logic for WiFi scanning. The promiscuous mode is turned on, the packet filter is applied and the the WiFi frame callback is set to our `wifiSniffer()` function defined earlier. Then the listening starts at channel 1 for 2 seconds, then the next channel and so on until `MAX_WIFI_CHANNEL`. Then the wifi listening is stopped and the wifi configuration is deinitialised. This is needed to enable BLE scanning.
+The function below contains the main logic for WiFi scanning. The promiscuous mode is turned on, the packet filter is applied and the the WiFi frame callback is set to our `wifiSniffer()` function defined earlier. Then the listening starts at channel 1 for 2 seconds, then the next channel and so on until `MAX_WIFI_CHANNEL`. Then the WiFi listening is stopped and the WiFi configuration is deinitialised. This is needed to enable BLE scanning.
 ```c
 void performWifiScan(){
   Serial.println("WiFi scan start");
@@ -328,7 +328,7 @@ void performWifiScan(){
 }
 ```
 
-The BLE scanning function is shown below. First, the Bluetooth LE is initialized, a scan object is created and the scan parameters are set: our callback function, passive scan mode and the scan intervals. Then an asynchronous scan is started for 6 seconds. It is then interrupted 1 second before finishing. This is a workaround, as the synchronous call would result in the ESP32 running out of heap space (`__cxa_allocate_exception`) when trying to construct the data to return when there are a lot of nearby devices. I discovered this issue when I was collecting data in a multi-storey office building.
+The BLE scanning function is shown below. Firstly, the Bluetooth LE is initialized, a scan object is created and the scan parameters are set: our callback function, passive scan mode and the scan intervals. Then an asynchronous scan is started for 6 seconds. It is then interrupted 1 second before finishing. This is a workaround, as the synchronous call would result in the ESP32 running out of heap space (`__cxa_allocate_exception`) when trying to construct the data to return when there are a lot of nearby devices. I discovered this issue when I was collecting data in a multi-storey office building during work hours.
 
 ```c
 void performBleScan() {
