@@ -1,5 +1,7 @@
 # Crowdedness Monitor
 
+<p align="center"><img src="./images/logo.png" width="80%"></p>
+
 Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. A solution to this is to use smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decide for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
 
 ## Structure of the system
