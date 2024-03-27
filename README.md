@@ -1,17 +1,17 @@
 # Crowdedness Monitor
 
-Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. This projects aims to solve this by using smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decided for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
+Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. Mi aim is to solve this by using smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decided for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
 
 ## Sensor overview
 
 To estimate the crowdedness of a place, I decided to use three data points:
- - A microphone for noise level
+ - Noise level
  - Nearby WiFi devices
  - Nearby Bluetooth devices
 
-My aim is to provide a prototype that works in several environments. For indoor places which people regularly visit, WiFi device data can be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect bluetooth devices as most people leave bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks or other places without open WiFi networks. 
+My aim is to provide a prototype that works in several environments. For indoor places which people regularly visit, WiFi device data can be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect Bluetooth devices as most people leave bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for Bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks or other places without open WiFi networks. 
 
-Sending this data over LTE offers independence from WiFi which most IoT devices rely on. To increase fault tolerance, I have opted to include a battery in the Smart Sensor to enable operation in remote places with intermittent power or even without power (e.g. using a solar panel could be used to recharge the built-in battery).
+Sending this data over LTE offers independence from WiFi which most IoT devices rely on. To increase fault tolerance, I have opted to include a battery in the Smart Sensor to enable operation in remote places with intermittent power or even without power (e.g. a solar panel could be used to recharge the built-in battery).
 
 ## Bill Of Materials
 
