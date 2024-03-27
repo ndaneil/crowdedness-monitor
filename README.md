@@ -1,21 +1,23 @@
 # Crowdedness Monitor
 
-Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. This projects aims to solved this by using smart sensors listening to wireless signals and noise level to help determine how crowded a place is.
+Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. This projects aims to solve this by using smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decided for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
 
 ## Sensor overview
 
-To detect the crowdedness of a place, I decided to use three sensors:
+To estimate the crowdedness of a place, I decided to use three data points:
  - A microphone for noise level
  - Nearby WiFi devices
  - Nearby Bluetooth devices
 
-My aim was to provide a prototype that works in several environments. For indoor places which people regularly visit, WiFi device data can be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect bluetooth devices as most people leave bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks.
+My aim is to provide a prototype that works in several environments. For indoor places which people regularly visit, WiFi device data can be a good predictor as people connect their smartphones/laptops to the local network. For small places like cafés, noise level could correlate with crowdedness too. I chose to detect bluetooth devices as most people leave bluetooth on on their phones (e.g. to listen to music with wireless headsets) and scanning for bluetooth devices could be one way of measuring crowdedness in outdoor public places like parks or other places without open WiFi networks. 
+
+Sending this data over LTE offers independence from WiFi which most IoT devices rely on. To increase fault tolerance, I have opted to include a battery in the Smart Sensor to enable operation in remote places with intermittent power or even without power (e.g. using a solar panel could be used to recharge the built-in battery).
 
 ## Bill Of Materials
 
-The following components are required for the sensor:
+The following components are needed to build the sensor:
  1. AVR-IoT Cellular Mini - this is the brain of the sensor, measuring noise levels and sending all data to the cloud using the built-in cellular modem
- 2. ESP32, for this project, a LOLIN32 lite board - the microcontroller used to count the number of nearby WiFi and Bluetooth devices
+ 2. ESP32, for this project, a LOLIN32 lite board - the microcontroller used to keep track of the number of nearby WiFi and Bluetooth devices
  3. Microphone module - for measuring the ambient noise level
  4. Toggle switch
  5. TP4056 LiPo battery charger
@@ -27,11 +29,13 @@ The following components are required for the sensor:
  11. M2.5 screws (4x)
  12. 70x90mm prototyping board
 
+The components needed for the Smart Sensor can be seen in the figure below:
+
 <p align="center"><img src="./images/bom-all.png" width="80%"></p>
 
 ## Hardware assembly
 
-Before starting to assemble the hardware, the first step should be activating the SIM card for the AVR-IoT Cellular Mini and testing that it successfully connects to Microchip Sandbox. For that, follow this Hackster guide: https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63
+Before starting to assemble the hardware, the first step should to activate the SIM card for the AVR-IoT Cellular Mini and test that it successfully connects to Microchip Sandbox. For that, follow this Hackster guide: [https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63](https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63)
 If everything works, solder the headers onto the board and get start assembling the sensor.
 
 The schematic for wiring the components is shown below:
@@ -42,9 +46,9 @@ The pinout for the ESP32 and AVR-IoT Cellular Mini boards are available here:
  - https://www.microchip.com/en-us/development-tool/ev70n78a
  - https://mischianti.org/esp32-wemos-lolin32-lite-high-resolution-pinout-and-specs/
 
-Apart from the ground connection, the two microcontrollers are connected via a Serial RX-TX pair and an other GPIO connection. This can be used in case of an optional battery saving mode to wake up the ESP32. GPIO4 was chosen on the ESP32-side since it is an RTC pin, so it can be used to wake up the microcontroller. The other two pins for the serial connection were chosen from the ones that had no limitations. A good guide on what pins to use on an ESP32 can be found here: https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
+Apart from the ground connection, the two microcontrollers are connected via a Serial RX-TX pair and an other GPIO connection. This can be used in case of an optional battery saving mode to wake up the ESP32. GPIO4 was chosen on the ESP32-side since it is an RTC pin, so it can be used to wake up the microcontroller. The other two pins for the serial connection were chosen from the ones that had no limitations. A good guide on what pins to use on an ESP32 can be found here: [https://randomnerdtutorials.com/esp32-pinout-reference-gpios/]( https://randomnerdtutorials.com/esp32-pinout-reference-gpios/).
 
-To make everything fit inside the custom casing I designed, I wired up the major components on a perfboard according to the image below:
+To make everything fit inside the custom casing I designed, I wired up the major components on a perfboard according to the layout below:
 
 <p align="center"><img src="./images/wiring.jpg" width="80%"></p>
 
@@ -56,15 +60,15 @@ The entire perfboard, along with the battery fits inside the casing I designed:
 
 <p align="center"><img src="./images/case.png" width="80%"></p>
 
-The STL files for the top and bottom parts are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen in the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have have had reverse polarity which could have damaged both microcontrollers. I have used a tweezer to remove the two wires from the plastic connector and then swapped them.
+The STL files for the top and bottom parts are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen on the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have had reverse polarity which could have damaged both microcontrollers if I hadn't noticed that. I have used a tweezer to remove the two wires from the plastic connector and then swapped them.
 
 <p align="center"><img src="./images/battery-wiring.jpg" width="80%"></p>
 
-After soldering the wires together, the charger can be hot glued into place to the bottom of the case and the switch can be secured with a nut or a keycap from the outside.
+After soldering the wires together, the charger can be hot glued into place to the bottom of the case and the switch can be secured from the outside with a nut or a keycap.
 
 <p align="center"><img src="./images/bat-placement.jpg" width="80%"></p>
 
-Then the top part can be placed and secured witch screws. Removing the microcontrollers beforehand allows easier access to the holes for the M2.5 screws. The battery cables can also be connected to the microcontrollers.
+Then the perfboard can be placed inside the 3D-printed enclosure and secured witch screws. Removing the microcontrollers beforehand allows easier access to the holes for the M2.5 screws. The battery cables should also be connected to the microcontrollers afterwards.
 
 <p align="center"><img src="./images/top-placement.jpg" width="80%"></p>
 
@@ -76,7 +80,7 @@ Let's write the software next.
 
 ## Software
 
-The software part can be divided into three parts:
+The software can be divided into three parts:
  - Cloud data storage
  - Device firmware
  - Data visualization and presentation
