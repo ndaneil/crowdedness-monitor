@@ -724,5 +724,50 @@ PS. don't forget to save your dashboard! That's it. The monitoring-side is compl
 
 ## Measurements
 
+I have recorded measurement data in two scenarios to evaluate how well the three data points (WiFi devices, BLE devices, noise level) correlate with crowdedness levels. The first one was my university's campus building. I have placed the sensor in a short hallway between the cafeteria and the main hall, the two busiest places on campus. Unfortunately, the noise levels do not correlate with the number of students. I suspect this was because the microphone's sensitivity and placement was not suited to measure noise levels from such a large area:
 
+<p align="center"><img src="./images/university-noise.png" width="80%"></p>
 
+The good news is, however, that the BLE and WiFi data correlates well with the number of students:
+
+<p align="center"><img src="./images/university-wireless.png" width="80%"></p>
+
+Unfortunately, there was a one-hour-long interval where the AVR-IoT Cellular Mini could not connect to the cellular network, but apart from that, the trend is clear. Focusing on the green curve (BLE device count), we can see a clear trend. University classes start at quarter past the hour and end on the hour. We can clearly see spikes when the breaks start and end around the time when the next lectures start. During the breaks, the main hall and the cafeteria is usually full of students. The reason the drops are not at quarter past the hour (when the lectures start) is the 6-minute `DEVICE_TTL_MS` before a device is assumed to have left the place. In the graph below, I have also marked the lecture starts and ends:
+
+<p align="center"><img src="./images/university-wireless-annotated.png" width="80%"></p>
+
+We can see that WiFi follows the same pattern, but with smaller peaks. I have two theories for this one. Firstly, WiFi signals reach further than BLE, so devices may be registered by my sensor even if they are not in the areas of interest. Secondly, the WiFi routers have 5GHz channels too, so devices connecting to that are not registered by my sensor. An other interesting observation is that the drop in BLE device count is small during lunchtime (between noon and 1PM).
+
+The second scenario I have recorded measurements for was an office building. Looking at the noise data, there is no clear trend observable:
+
+<p align="center"><img src="./images/office-noise.png" width="80%"></p>
+
+But looking at the wireless signals, we can see a clear pattern:
+
+<p align="center"><img src="./images/office-wireless.png" width="80%"></p>
+
+Starting at 8:30 AM, the number of devices increases as people arrive. The number of devices varies a bit, but overall it is high. At around 15:30, the number of devices starts dropping slowly, which accelerates at 5PM when most of the people start heading home. We can see on the graph above, that there are far more BLE devices registered than WiFi ones. That is due to the 5GHz access points that are preferred in crowded environments.
+
+### Learnings and improvement ideas
+
+Based on the three data points examined, BLE performed the best when it comes to correlation with crowdedness. For WiFi data to be useful, I believe an other microcontroller with 5GHz monitoring capabilities should be used. Noise level measurements turned out to not be accurate at all, so in its current form, the noise data collected does not provide any insight into the crowdedness of a place.
+
+With more data collected, I am confident, BLE device count could be used to accurately assess the crowdedness of a place. I see several refinement possibilies to this data point too. The first one is excluding devices that are permanently detected near the sensor. Devices that are always nearby don't indicate the persence of people and therefore should be excluded from the count. And other idea I have is to introduce a threshold for RSSI (Received Signal Strength Indicator) to only consider devices that are closer to the sensor. My last improvement idea is to filter out manufacturers based on the first few bytes of the mac address. Devices like printers and IoT sensors don't correlate with human presence while MAC addresses of Apple and Samsung devices likely belong to a smartphone, tablet or laptop that people carry with them.
+
+To demonstrate how the crowdedness information would be provided to everyone, I have added a new panel to the Grafana dashboard. This time, the visualization type should be changed to `Stat` and I have set up a simple value-based thresholding for `LOW`, `MEDIUM` and `CROWDED` levels based on the BLE device count from the university crowdedness measurement: 
+
+<p align="center"><img src="./images/grafana-final-stat.png" width="80%"></p>
+
+The query is the same as the one used for the BLE device count:
+```
+from(bucket: "sensordata")
+  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
+  |> filter(fn: (r) =>
+    r._measurement == "wireless" and r._field == "ble-devices"
+  )
+  |> aggregateWindow(every: $__interval, fn: mean)
+```
+
+Grafana dashboards can be published multiple ways ((https://grafana.com/blog/2023/10/10/how-to-embed-grafana-dashboards-into-web-applications/)[https://grafana.com/blog/2023/10/10/how-to-embed-grafana-dashboards-into-web-applications/]), so this panel could be embedded to other websites like the webpage of the university. Then, anyone could see crowdedness information, like the one shown below: (I have also added an other stat panel without the value mappings to display the device count.)
+
+<p align="center"><img src="./images/phone-disp.png" width="50%"></p>
