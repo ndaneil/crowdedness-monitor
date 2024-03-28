@@ -491,7 +491,7 @@ long lastEspHeapInfo = 0;
 long lastDataUpdateFromESP = 0;
 ```
 
-I have tried to set up the USART2 pins (RX, TX on the header) to use hardware serial, but I could not get it to work, so I use software serial for these pins as seen below:
+I have tried to set up the USART2 pins (RX, TX on the header) to use hardware serial, but I could not get it to work, so I used software serial for these pins as seen below:
 
 ```c
 #include <SoftwareSerial.h> // For some reason, the hardware serial did not work
