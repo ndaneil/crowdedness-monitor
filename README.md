@@ -716,7 +716,7 @@ from(bucket: "sensordata")
   |> aggregateWindow(every: $__interval, fn: mean)
 ```
 
-Your final dashboard should look someting like this:
+Your final dashboard should look something like this:
 
 <p align="center"><img src="./images/grafana-finished.png" width="80%"></p>
 
