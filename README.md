@@ -2,7 +2,9 @@
 
 <p align="center"><img src="./images/logo.png" width="80%"></p>
 
-Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many people are at a study hall, in the office or at a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. A solution to this is to use smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decide for example if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
+Every city has popular spots which can get crowded at unpredictable times. The crowdedness of a place, like how many students are at the study hall, how crowded is the office or a park can be a major factor in deciding whether or not to go there. Information about crowdedness, however, is rarely available. A solution to this is to use smart sensors listening to wireless signals and noise level to help determine how crowded a place is. With this information, one can decide, for example, if going to the university building to study makes sense, on which workday is the office least crowded, or what to expect when going to the park.
+
+This information is not only useful for individuals but for the cities too. Crowdedness data collected over a longer timeframe can enable predicting crowdedness. With such information, maintenance tasks can be carried out when it causes the smallest disruption. Public transportation schedules can also be optimized based on ridership data which could be collected using smart sensors such as the one shown in this guide.
 
 ## Structure of the system
 
@@ -27,8 +29,8 @@ The following components are needed to build the sensor:
  3. Microphone module - for measuring the ambient noise level
  4. Toggle switch
  5. TP4056 LiPo battery charger
- 6. 2.54mm 40pin female header (x2)
- 7. 2.54mm 4pin female header with longer leads
+ 6. 2.54mm 40-pin female header (x2)
+ 7. 2.54mm 4-pin female header with longer leads
  8. Wires
  9. 2000mAh LiPo battery (other capacity works too)
  10. 2x male and 1x female micro jst connectors
@@ -41,18 +43,18 @@ The components needed for the Smart Sensor can be seen in the figure below:
 
 ## Hardware assembly
 
-Before starting to assemble the hardware, the first step should to activate the SIM card for the AVR-IoT Cellular Mini and test that it successfully connects to Microchip Sandbox. For that, follow this Hackster guide: [https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63](https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63)
+Before starting to assemble the hardware, the first step should be to activate the SIM card for the AVR-IoT Cellular Mini and test that it successfully connects to Microchip Sandbox. For that, follow this Hackster guide: [https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63](https://www.hackster.io/keenan-johnson/avr-iot-cellular-mini-107a63)
 If everything works, solder the headers onto the board and get start assembling the sensor.
 
 The schematic for wiring the components is shown below:
 
 <p align="center"><img src="./images/schematics.png" width="80%"></p>
 
-I chose the LOLIN32 board, because it had a battery connection, but other ESP32-based boards will work too. The pinouts for the ESP32 and AVR-IoT Cellular Mini boards are available here:
+I chose the LOLIN32 board because it had a battery connection, but other ESP32-based boards will work too. The pinouts for the ESP32 and AVR-IoT Cellular Mini boards are available here:
  - https://www.microchip.com/en-us/development-tool/ev70n78a
  - https://mischianti.org/esp32-wemos-lolin32-lite-high-resolution-pinout-and-specs/
 
-Apart from the ground connection, the two microcontrollers are connected via a Serial RX-TX pair and an other GPIO connection. This can be used in case of an optional battery saving mode to wake up the ESP32. GPIO4 was chosen on the ESP32-side since it is an RTC pin, so it can be used to wake up the microcontroller. The other two pins for the serial connection were chosen from the ones that had no limitations. A good guide on what pins to use on an ESP32 can be found here: [https://randomnerdtutorials.com/esp32-pinout-reference-gpios/]( https://randomnerdtutorials.com/esp32-pinout-reference-gpios/).
+Apart from the ground connection, the two microcontrollers are connected via a Serial RX-TX pair and an other GPIO connection. This can be used in case of an optional battery saving mode to wake up the ESP32. GPIO4 was chosen on the ESP32-side since it is an RTC pin, so it can be used to wake up the microcontroller. The other two pins for the serial connection were chosen from the ones that had no limitations. A good guide on what pins to use on the ESP32 can be found here: [https://randomnerdtutorials.com/esp32-pinout-reference-gpios/]( https://randomnerdtutorials.com/esp32-pinout-reference-gpios/).
 
 To make everything fit inside the custom casing I designed, I wired up the major components on a perfboard according to the layout below:
 
@@ -66,7 +68,7 @@ The entire perfboard, along with the battery fits inside the casing I designed:
 
 <p align="center"><img src="./images/case.png" width="80%"></p>
 
-The STL files for the top and bottom parts are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). I have 3D-printed them from PLA, but for long-term outdoor use, I recommend either ABS or PETG. There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen on the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have at home had reversed polarity which could have damaged both microcontrollers if I hadn't noticed that. I have used tweezers to remove the two wires from the plastic connector and then swapped them.
+The STL files for the top and bottom parts of the casing are available [here](./3dfiles/case-top.stl) and [here](./3dfiles/case-bottom.stl). I have 3D-printed them from PLA, but for long-term outdoor use, I recommend either ABS or PETG. There are cutouts for the switch, the LiPo charging board and the microphone. I opted to include a separate charger besides the one onboard the AVR-IoT Cellular Mini board in order to be able to charge the battery while everything else is powered down. As can be seen on the schematic and on the image below too, the battery is connected to the TP4056's battery terminals through the female micro JST connector and the male micro JST connectors are connected to the protected output of the LiPo charging board through the switch. **Make sure to check if the polarity of the JST connectors is correct!** The ones I have at home had reversed polarity which could have damaged both microcontrollers if I hadn't noticed that. I have used tweezers to remove the two wires from the plastic connector and then swapped them.
 
 <p align="center"><img src="./images/battery-wiring.jpg" width="80%"></p>
 
@@ -86,7 +88,7 @@ Let's write the software next.
 
 ## Cloud storage - InfluxDB
 
-Before writing code for the two microcontrollers, we need to place to store the data the AVR-IoT Cellular Mini will transmit. I opted to use InfluxDB, a time-series database. It has a free managed option as well as paid and self-hosted options making it suitable for several use cases. In this guide, I use the InfluxDB's cloud solution. To get started with InfluxDB, the first step is to register for a free serverless cloud account at [https://www.influxdata.com](https://www.influxdata.com):
+Before writing code for the two microcontrollers, we need to place to store the data the AVR-IoT Cellular Mini will transmit. I opted to use InfluxDB, a time-series database. It has a free managed option as well as paid and self-hosted options making it suitable for several use cases. In this guide, I use InfluxDB's cloud solution. To get started with InfluxDB, the first step is to register for a free serverless cloud account at [https://www.influxdata.com](https://www.influxdata.com):
 
 <p align="center"><img src="./images/influxdb-signup.png" width="80%"></p>
 
@@ -106,11 +108,11 @@ Grafana will be used for visualizing the data, presenting it in a nice, easy-to-
 
 ### ESP32 Arduino code
 
-For both the ESP32 and the AVR IoT Cellular Mini, I wrote the code using the [Arduino IDE](https://www.arduino.cc/en/software). [This](https://randomnerdtutorials.com/getting-started-with-esp32/) is a good guide on how to get started with the Arduino ESP for ESP32.
+For both the ESP32 and the AVR-IoT Cellular Mini, I wrote the code using the [Arduino IDE](https://www.arduino.cc/en/software). [This](https://randomnerdtutorials.com/getting-started-with-esp32/) is a good guide on how to get started with the ESP32 using the Arduino IDE.
 
-The ESP32's responsibility is collecting WiFi and Bluetooth device data, more specifically, the number of unique devices nearby. For listening to WiFi messages, the ESP32 has a so-called promiscuous mode where the ESP32 listens to all WiFi packets (called frames), even those not intended for the microcontroller. I have read [this](https://www.hackster.io/p99will/esp32-wifi-mac-scanner-sniffer-promiscuous-4c12f4) Hackster guide to understand the basics on how to run promiscuous mode on the ESP32. For nearby bluetooth devices, the ESP32 can scan passively or actively for nearby BLE devices. A good approach I found for BLE scanning was in [this](https://github.com/dollop80/ESP32-BLE-Scanner/blob/master/ESP32_BLE_Scanner.ino) GitHub repo.
+The ESP32's responsibility is collecting WiFi and Bluetooth device data, more specifically, the number of unique devices nearby. For listening to WiFi messages, the ESP32 has a so-called promiscuous mode where the ESP32 listens to all WiFi packets (called frames), even those not intended for the microcontroller. I have read [this](https://www.hackster.io/p99will/esp32-wifi-mac-scanner-sniffer-promiscuous-4c12f4) Hackster guide to understand the basics on how to run promiscuous mode on the ESP32. For nearby Bluetooth devices, the ESP32 can scan passively or actively for nearby BLE devices. A good approach I found for BLE scanning was in [this](https://github.com/dollop80/ESP32-BLE-Scanner/blob/master/ESP32_BLE_Scanner.ino) GitHub repo.
 
-An important limitation of the ESP32 for our use case is that WiFi and BLE share the same radio, so only one can run at a time. For WiFi, the ESP32 can only be tuned to a single 2.4GHz channel out of the 14 available. This means that in order to get an accurate count of nearby devices, we need to alternate between scanning on different WiFi channels and for BLE devices. Let's see how it can be done. The full source code is available [here](./esp32.ino). 
+An important limitation of the ESP32 for our use case is that WiFi and BLE share the same radio, so only one can run at a time. Also, for WiFi, the ESP32 can only be tuned to a single 2.4GHz channel out of the 14 available. This means that in order to get an accurate count of nearby devices, we need to alternate between scanning on different WiFi channels and for BLE devices. Let's see how it can be done. The full source code is available [here](./esp32.ino). 
 
 The first part of the sketch is the imports, followed by increasing the main loop task's stack size from 8KB to 32KB. This is to make sure we have enough stack space.
 
@@ -126,7 +128,7 @@ The first part of the sketch is the imports, followed by increasing the main loo
 SET_LOOP_TASK_STACK_SIZE(32 * 1024)
 ```
 
-The next step is to define a what the ESP32 will filter for when listening to WiFi packets. Additionally, two structs are defined, which are needed to interface with the low-level parts of the WiFI packet callback.
+The next step is to define a what the ESP32 will filter for when listening to WiFi packets. Additionally, two structs are defined, which are needed to interface with the low-level parts of the WiFi packet callback.
 
 ```c
 const wifi_promiscuous_filter_t filt={
@@ -148,13 +150,13 @@ typedef struct {
 } __attribute__((packed)) WifiMgmtHdr;
 ```
 
-Next, we define the maximum channel number that the ESP32 will scan. For me in the EU, this channel is 13:
+Next, we define the maximum channel number that the ESP32 will scan. For me in the EU, this is channel 13:
 
 ```c
 #define MAX_WIFI_CHANNEL 13 //max channel for scanning -> US = 11, EU = 13, Japan = 14
 ```
 
-This is followed by defining the number of unique devices we aim to track at most. To get an accurate view of the number of devices, their MAC addresses will be extracted from the scan results and then cached for 6 minutes (as set by `DEVICE_TTL_MS`) in order to not count a device twice. WiFi and BLE addresses are stored separately. The `Device` struct not only stores the 6-byte MAC address, but also the last time the device was seen and whether the MAC address is considered a nearby device (it was seen recently) or not and a new device's MAC address can be placed at that slot.
+This is followed by defining the number of unique devices we aim to track at most. To get an accurate view of the number of devices, their MAC addresses will be extracted from the scan results and then cached for 6 minutes (as set by `DEVICE_TTL_MS`) in order to not count a device twice. WiFi and BLE addresses are stored separately. The `Device` struct not only stores the 6-byte MAC address, but also the last time the device was seen and whether the MAC address is considered a nearby device (it was seen recently) or not. If a device is no longer considered to be nearby, a new device's MAC address can be placed at that slot.
 
 ```c
 #define DEVICE_BUFFER_SIZE 1024
@@ -217,7 +219,7 @@ void registerDevice(uint8_t mac[6], bool isWiFi){
 }
 ```
 
-If an existing device is alive (i. e. it has been seen recently) and matches the MAC address (`memcmp(mac, wifiDevices[i].mac,6) == 0`) then its last seen time (`lastms`) is updated. Otherwise, the device's MAC address is placed into the first free slot of the device buffer. Additionally, when a new MAC address is discovered, it is printed to the serial output, so it can be seen from the Arduino IDE's serial monitor (`[WIFI] NEW MAC: AA:AA:AA:AA:AA:AA`). If the buffer is full, the MAC address is ignored.
+If an existing device is alive (i.e. it has been seen recently) and matches the MAC address (`memcmp(mac, wifiDevices[i].mac,6) == 0`) then its last seen time (`lastms`) is updated. Otherwise, the device's MAC address is placed into the first free slot of the device buffer. Additionally, when a new MAC address is discovered, it is printed to the serial output, so it can be seen from the Arduino IDE's serial monitor (`[WIFI] NEW MAC: AA:AA:AA:AA:AA:AA`). If the buffer is full, the MAC address is ignored.
 
 The next method is responsible for marking the entries outside the TTL interval (as defined by `DEVICE_TTL_MS`) as not alive. This means that these devices won't be included in the total nearby devices count and their slot can be taken up by other new devices discovered.
 
@@ -275,7 +277,7 @@ void wifiSniffer(void* buf, wifi_promiscuous_pkt_type_t type) {
 }
 ```
 
-The first part of the functions is responsible for getting the data and some sanity checks. A WiFi frame can have up to four MAC addresses ([https://howiwifi.com/2020/07/13/802-11-frame-types-and-formats/](https://howiwifi.com/2020/07/13/802-11-frame-types-and-formats/)), however, we are only interested in the first one: the source. It starts at byte 4 and is 6 bytes long. The latter part of the function extracts this information from the packet and calls the `registerDevice()` function we wrote earlier.
+The first part of the function is responsible for getting the data and applying some sanity checks. A WiFi frame can have up to four MAC addresses ([https://howiwifi.com/2020/07/13/802-11-frame-types-and-formats/](https://howiwifi.com/2020/07/13/802-11-frame-types-and-formats/)), however, we are only interested in the first one: the source. It starts at byte 4 and is 6 bytes long. The latter part of the function extracts this information from the packet and calls the `registerDevice()` function we wrote earlier.
 
 A slightly different approach is required when defining the callback for the BLE scan:
 
@@ -348,7 +350,7 @@ void performBleScan() {
 }
 ```
 
-The final part is clearing the results and deinitialising the BLE driver. Here, the `deinit()` function's parameter determines whether or not to free up the memory allocated to the BLE driver. It has to be set to `false` otherwise the BLE stack cannot be initialized again without resetting the ESP32.
+The final part is clearing the results and deinitialising the BLE driver. Here, the `deinit()` function's parameter determines whether or not to free up the memory allocated to the BLE driver. It has to be set to `false`, otherwise the BLE stack cannot be initialized again without resetting the ESP32.
 
 The final function is the main loop:
 
@@ -377,7 +379,7 @@ void loop() {
 }
 ```
 
-Here, firstly WiFi then BLE scanning is performed. Then if there have been a couple of round of scans, the data is sent to the AVR-IoT Cellular Mini which will publish this information to the InfluxDB storage. The device cleanup is also called, followed by checking the Serial2 connection whether a sleep command has been issued by the other microcontroller.
+Here, firstly WiFi then BLE scanning is performed. Then, if there have been a couple of round of scans already, the data is sent to the AVR-IoT Cellular Mini which will publish this information to the InfluxDB storage. The device cleanup is also called, followed by checking the Serial2 connection whether a sleep command has been issued by the other microcontroller.
 
 With this, the code to run on the ESP32 is complete. The full source code is available [here](./esp32.ino). To upload it, select ESP32 dev module as the device, choose the right serial port and set the partition scheme to Huge APP:
 
@@ -405,7 +407,7 @@ The next step is to write the code to run on the AVR-IoT Cellular Mini.
 
 ### AVR-IoT Cellular Mini Arduino code
 
-To set up Arduino ide for the board, please follow the steps outlined on Microchip's website: [https://iot.microchip.com/docs/arduino/introduction/devenv](https://iot.microchip.com/docs/arduino/introduction/devenv).
+To set up Arduino IDE for the board, please follow the steps outlined on Microchip's website: [https://iot.microchip.com/docs/arduino/introduction/devenv](https://iot.microchip.com/docs/arduino/introduction/devenv).
 
 Since we will be using HTTPS to communicate with InfluxDB, the root certificate for Let's Encrypt needs to be loaded to the board. For that, flash the Provision sketch ([https://github.com/microchip-pic-avr-solutions/avr-iot-cellular-arduino-library/blob/main/examples/provision/provision.ino](https://github.com/microchip-pic-avr-solutions/avr-iot-cellular-arduino-library/blob/main/examples/provision/provision.ino)) to the board and then select HTTP provisioning, then TLS 1.3 and finally opt to upload a custom CA certificate:
 
@@ -438,7 +440,7 @@ Then paste the contents of the PEM file corresponding to Let's Encrypt's ISRG Ro
 
 After the certificate has been saved, press enter and the process is complete. Next, let's look at what the code running on the AVR IoT Cellular Mini should do.
 
-The first part is including the relevant libraries and defining the important constants. Enter the read-write influx token generated earlier to the `INFLUX_TOKEN` string. 
+The first part is including the relevant libraries and defining the important constants. Enter the read-write InfluxDB token generated earlier to the `INFLUX_TOKEN` string. 
 
 ```c
 
@@ -460,7 +462,7 @@ The first part is including the relevant libraries and defining the important co
 #define DEVICE_TAG "AVR_IOT"
 ```
 
-For setting the `INFLUX_URL` and `INFLUX_ORG` strings, check InfluxDB's organization settings for the Cluster URL and Organization ID values:
+For setting the `INFLUX_URL` and `INFLUX_ORG` strings, check InfluxDB's organization settings for your Cluster URL and Organization ID values:
 
 <p align="center"><img src="./images/influxdb-org-info.png" width="80%"></p>
 
@@ -639,7 +641,7 @@ Now that the data sending is complete, let's visualize the collected data.
 
 ### Grafana
 
-With Grafana, [https://grafana.com/](https://grafana.com/) it is really easy to make nince visulizations for our data. The first step is to register a free Grafana account. A great guide is available here: [https://grafana.com/docs/grafana-cloud/quickstart/](https://grafana.com/docs/grafana-cloud/quickstart/). When first launching your Grafana instance, opt to set up an InfluxDB datasource:
+With [Grafana](https://grafana.com/), it is really easy to make nince visualizations for our data. The first step is to register a free Grafana account. A great guide is available here: [https://grafana.com/docs/grafana-cloud/quickstart/](https://grafana.com/docs/grafana-cloud/quickstart/). When first launching your Grafana instance, opt to set up an InfluxDB datasource:
 
 <p align="center"><img src="./images/grafana-datasource.png" width="80%"></p>
 
@@ -720,7 +722,7 @@ Your final dashboard should look something like this:
 
 <p align="center"><img src="./images/grafana-finished.png" width="80%"></p>
 
-PS. don't forget to save your dashboard! That's it. The monitoring-side is complete. In the next section, I will show how well the three metric collected correlate with the crowdedness of different places.
+PS. don't forget to save your dashboard! That's it. The monitoring-side is complete. In the next section, I will show how well the three metrics collected correlate with the crowdedness of different places.
 
 ## Measurements
 
@@ -732,11 +734,11 @@ The good news is, however, that the BLE and WiFi data correlates well with the n
 
 <p align="center"><img src="./images/university-wireless.png" width="80%"></p>
 
-Unfortunately, there was a one-hour-long interval where the AVR-IoT Cellular Mini could not connect to the cellular network, but apart from that, the trend is clear. Focusing on the green curve (BLE device count), we can see a clear trend. University classes start at quarter past the hour and end on the hour. We can clearly see spikes when the breaks start and end around the time when the next lectures start. During the breaks, the main hall and the cafeteria is usually full of students. The reason the drops are not at quarter past the hour (when the lectures start) is the 6-minute `DEVICE_TTL_MS` before a device is assumed to have left the place. In the graph below, I have also marked the lecture starts and ends:
+Unfortunately, there was a one-hour-long interval where the AVR-IoT Cellular Mini could not connect to the cellular network, but apart from that, the trend is clear. Focusing on the green curve (BLE device count), we can see a clear trend. University classes start at quarter past the hour and end on the hour. We can clearly see spikes when the breaks start and drops around the time when the next lectures start. During the breaks, the main hall and the cafeteria is usually full of students. The reason the drops are not at quarter past the hour (when the lectures start) is the 6-minute `DEVICE_TTL_MS` before a device is assumed to have left the place. In the graph below, I have also marked the lecture starts and ends:
 
 <p align="center"><img src="./images/university-wireless-annotated.png" width="80%"></p>
 
-We can see that WiFi follows the same pattern, but with smaller peaks. I have two theories for this one. Firstly, WiFi signals reach further than BLE, so devices may be registered by my sensor even if they are not in the areas of interest. Secondly, the WiFi routers have 5GHz channels too, so devices connecting to that are not registered by my sensor. An other interesting observation is that the drop in BLE device count is small during lunchtime (between noon and 1PM).
+We can see that WiFi follows the same pattern, but with smaller peaks. I have two theories for this one. Firstly, WiFi signals reach further than BLE, so devices may be registered by my sensor even if they are not in the areas of interest. Secondly, the WiFi routers have 5GHz channels too, so devices connecting to that are not registered by my sensor. An other interesting observation is that the drop in BLE device count is small during lunchtime (between noon and 1PM) when the cafeteria is full.
 
 The second scenario I have recorded measurements for was an office building. Looking at the noise data, there is no clear trend observable:
 
@@ -750,7 +752,7 @@ Starting at 8:30 AM, the number of devices increases as people arrive. The numbe
 
 ### Learnings and improvement ideas
 
-Based on the three data points examined, BLE performed the best when it comes to correlation with crowdedness. For WiFi data to be useful, I believe an other microcontroller with 5GHz monitoring capabilities should be used. Noise level measurements turned out to not be accurate at all, so in its current form, the noise data collected does not provide any insight into the crowdedness of a place.
+Based on the three data points examined, BLE performed the best when it comes to correlation with crowdedness. For WiFi data to be useful, I believe an other microcontroller with 5GHz monitoring capabilities should be used instead of the ESP32. Noise level measurements turned out to not be accurate at all, so in its current form, the noise data collected does not provide any insight into the crowdedness of a place.
 
 With more data collected, I am confident, BLE device count could be used to accurately assess the crowdedness of a place. I see several refinement possibilies to this data point too. The first one is excluding devices that are permanently detected near the sensor. Devices that are always nearby don't indicate the persence of people and therefore should be excluded from the count. And other idea I have is to introduce a threshold for RSSI (Received Signal Strength Indicator) to only consider devices that are closer to the sensor. My last improvement idea is to filter out manufacturers based on the first few bytes of the mac address. Devices like printers and IoT sensors don't correlate with human presence while MAC addresses of Apple and Samsung devices likely belong to a smartphone, tablet or laptop that people carry with them.
 
